@@ -21,4 +21,10 @@ const getAllSuperheroes = async () => {
   return superheroes;
 };
 
-module.exports = { getAllSuperheroes, createSuperhero };
+const getSuperheroById = async (id) => {
+  const superhero = await Superhero.findById(id);
+  console.log(`superhero is ${superhero}`);
+  return superhero;
+}
+
+module.exports = { getAllSuperheroes, createSuperhero, getSuperheroById };

@@ -4,6 +4,7 @@ var debug = require("debug")("server:routes");
 const {
   getAllSuperheroes,
   createSuperhero,
+  getSuperheroById,
 } = require("../db/models/superheroModel");
 
 router.get("/", async (req, res) => {
@@ -28,7 +29,25 @@ router.post("/", async (req, res) => {
   } catch (err) {
     debug(`failed to add new superhero: ${newSuperhero.name}`);
     debug(err.message);
+    res.status(500).send("Error in data. Please try again.");
   }
 });
+
+router.get('/:id', async (req, res) => {
+  req.params; // { id: '_______' }
+  
+  const id = req.params.id;
+
+  debug(`:id is (${id})`);
+  try {
+    const superhero = await getSuperheroById(id);
+    return res.send(superhero);
+  } catch(ex) {
+    debug(`EXCEPTION in superheroes/:id (${id}):`, ex.message);
+    return res.status(500).send(ex.message);
+  }
+  res.send("yippee!")
+});
+
 
 module.exports = router;
