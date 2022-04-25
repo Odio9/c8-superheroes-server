@@ -25,6 +25,18 @@ const getSuperheroById = async (id) => {
   const superhero = await Superhero.findById(id);
   console.log(`superhero is ${superhero}`);
   return superhero;
-}
+};
 
-module.exports = { getAllSuperheroes, createSuperhero, getSuperheroById };
+const updateSuperhero = async (id, updateData) => {
+  const updatedSuperhero = await Superhero.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+  return updatedSuperhero;
+};
+
+module.exports = {
+  getAllSuperheroes,
+  createSuperhero,
+  getSuperheroById,
+  updateSuperhero,
+};
