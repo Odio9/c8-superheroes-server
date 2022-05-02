@@ -8,7 +8,24 @@ const {
   updateSuperhero,
 } = require("../db/models/superheroModel");
 
+const mustBeAgent = (req, res, next) => {
+  console.log("reached mustBeAgent middleware");
+  if (req.user && req.user.isAgent) {
+    return next();
+  }
+  res.sendStatus(401);
+};
+
+const mustBeOwnProfile = (req, res, next) => {
+  const id = req.params.id;
+  if (req.user && (req.user.isAgent || req.user.superheroId === id)) {
+    return next();
+  }
+  res.sendStatus(401);
+};
+
 router.get("/", async (req, res) => {
+  console.log(`req.user is ${req.user}`);
   try {
     debug("getting all superheroes");
     const superheroes = await getAllSuperheroes();
@@ -18,7 +35,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", mustBeAgent, async (req, res) => {
   const newSuperhero = req.body;
   debug(`adding new superhero: ${newSuperhero.name}`);
   try {
@@ -50,7 +67,7 @@ router.get("/:id", async (req, res) => {
   res.send("yippee!");
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", mustBeOwnProfile, async (req, res) => {
   const id = req.params.id;
   const updateData = req.body;
   try {
