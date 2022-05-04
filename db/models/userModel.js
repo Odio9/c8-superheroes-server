@@ -25,7 +25,7 @@ const createUser = async (user) => {
 };
 
 const getUserById = async (id) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).select("-password");
   console.log(`User is ${user}`);
   return user;
 };

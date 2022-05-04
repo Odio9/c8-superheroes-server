@@ -21,8 +21,10 @@ passport.use(
       if (!passwordsMatch) {
         return done(null, false);
       }
-
-      return done(null, user);
+      const userToSend = user.toObject();
+      delete userToSend.password;
+      console.log("user after deleting password", userToSend);
+      return done(null, userToSend);
     } catch (error) {
       return done(error, null);
     }
@@ -31,7 +33,7 @@ passport.use(
 
 passport.serializeUser(function (user, done) {
   console.log("passport wants to store this user in a cookie", user);
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async function (id, done) {
@@ -49,12 +51,16 @@ passport.deserializeUser(async function (id, done) {
 });
 
 router.post("/login", passport.authenticate("local"), (req, res) => {
-  res.send("success");
+  res.send(req.user);
 });
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.send("successfully logged out");
+});
+
+router.get("/loggedInUser", (req, res) => {
+  res.send(req.user);
 });
 
 module.exports = router;
