@@ -78,4 +78,4 @@ describe('User model', () => {
         throw new Error('unimplemented')
     })
 
-});
+})
